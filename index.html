@@ -2,14 +2,37 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tap to Play</title>
   <style>
-    body { margin: 0; padding: 0; background: black; color: white; text-align: center; font-size: 2em; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    body, html { margin: 0; padding: 0; background: black; height: 100%; }
+    iframe { width: 100%; height: 100%; border: 0; }
   </style>
 </head>
 <body>
-  <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="text-decoration: none; color: white;">
-    Tap to Enter
-  </a>
+  <div id="player"></div>
+
+  <script>
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        width: '100%',
+        height: '100%',
+        videoId: 'dQw4w9WgXcQ',
+        playerVars: {
+          'autoplay': 1,
+          'mute': 1,
+          'playsinline': 1
+        },
+        events: {
+          'onReady': function(event) {
+            event.target.playVideo();
+          }
+        }
+      });
+    }
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  </script>
 </body>
 </html>   
