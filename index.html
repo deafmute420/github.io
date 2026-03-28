@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
     iframe { width: 100%; height: 100%; border: 0; }
     .overlay { 
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: black; color: white; text-align: center; 
       display: flex; justify-content: center; align-items: center; 
-      font-size: 2em; cursor: pointer; 
+      font-size: 2em; cursor: pointer; z-index: 999; 
     }
   </style>
 </head>
 <body>
   <div class="overlay" onclick="play()">Tap to Enter</div>
-  <iframe id="video" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
-          allow="autoplay; encrypted-media" style="display:none"></iframe>
+  <iframe 
+    id="video" 
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
+    allow="autoplay; fullscreen; encrypted-media" 
+    style="display:none">
+  </iframe>
 
   <script>
-    const iframe = document.getElementById('video');
-    const player = new YT.Player(iframe, {
-      events: { 'onReady': () => iframe.style.display = 'block' }
-    });
-
     function play() {
-      document.querySelector('.overlay').innerText = 'Rickrolled!';
-      iframe.contentWindow.postMessage('{"event":"command","func":"unmute","args":""}', '*');
-      iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      const overlay = document.querySelector('.overlay');
+      overlay.innerText = 'Rickrolled!';
+      overlay.style.zIndex = -1;
+
+      const iframe = document.getElementById('video');
+      iframe.style.display = 'block';
+
+      // Use postMessage to unmute and play
+      setTimeout(() => {
+        iframe.contentWindow.postMessage('{"event":"command","func":"unmute","args":""}', '*');
+        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      }, 100);
     }
 
     // Load YouTube API
