@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    iframe { width: 100%; height: 100%; border: 0; }
+    .overlay { 
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: black; color: white; text-align: center; 
+      display: flex; justify-content: center; align-items: center; 
+      font-size: 2em; cursor: pointer; 
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" onclick="play()">Tap to Enter</div>
+  <iframe id="video" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
+          allow="autoplay; encrypted-media" style="display:none"></iframe>
+
+  <script>
+    const iframe = document.getElementById('video');
+    const player = new YT.Player(iframe, {
+      events: { 'onReady': () => iframe.style.display = 'block' }
+    });
+
+    function play() {
+      document.querySelector('.overlay').innerText = 'Rickrolled!';
+      iframe.contentWindow.postMessage('{"event":"command","func":"unmute","args":""}', '*');
+      iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+
+    // Load YouTube API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  </script>
+</body>
+</html>   
