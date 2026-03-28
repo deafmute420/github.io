@@ -3,36 +3,37 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body, html { margin: 0; padding: 0; background: black; height: 100%; }
-    iframe { width: 100%; height: 100%; border: 0; }
+    body, html { margin: 0; padding: 0; height: 100%; background: black; display: flex; justify-content: center; align-items: center; }
+    #overlay { color: white; font-size: 2em; cursor: pointer; }
+    #player { width: 100%; height: 100%; display: none; }
   </style>
 </head>
 <body>
+  <div id="overlay">Tap to Enter</div>
   <div id="player"></div>
 
   <script>
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        width: '100%',
-        height: '100%',
-        videoId: 'dQw4w9WgXcQ',
-        playerVars: {
-          'autoplay': 1,
-          'mute': 1,
-          'playsinline': 1
-        },
-        events: {
-          'onReady': function(event) {
-            event.target.playVideo();
-          }
-        }
-      });
-    }
+    document.getElementById('overlay').onclick = function() {
+      this.style.display = 'none';
+      document.getElementById('player').style.display = 'block';
 
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = function() {
+        player = new YT.Player('player', {
+          width: '100%',
+          height: '100%',
+          videoId: 'dQw4w9WgXcQ',
+          playerVars: { 'autoplay': 1, 'mute': 1, 'playsinline': 1 },
+          events: {
+            'onReady': function(e) { e.target.playVideo(); }
+          }
+        });
+      };
+    };
   </script>
 </body>
 </html>   
