@@ -14,31 +14,33 @@
   </style>
 </head>
 <body>
-  <div class="overlay" onclick="play()">Tap to Enter</div>
+  <div class="overlay" id="overlay">Tap to Enter</div>
   <iframe 
-    id="video" 
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
+    id="player" 
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&autoplay=1&mute=1" 
     allow="autoplay; fullscreen; encrypted-media" 
     style="display:none">
   </iframe>
 
   <script>
-    function play() {
-      const overlay = document.querySelector('.overlay');
-      overlay.innerText = 'Rickrolled!';
-      overlay.style.zIndex = -1;
-
-      const iframe = document.getElementById('video');
-      iframe.style.display = 'block';
-
-      // Use postMessage to unmute and play
-      setTimeout(() => {
-        iframe.contentWindow.postMessage('{"event":"command","func":"unmute","args":""}', '*');
-        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-      }, 100);
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        events: {
+          'onReady': function() {
+            document.getElementById('player').style.display = 'block';
+          }
+        }
+      });
     }
 
-    // Load YouTube API
+    document.getElementById('overlay').onclick = function() {
+      this.innerHTML = 'Rickrolled!';
+      this.style.zIndex = -1;
+      player.unMute();
+      player.playVideo();
+    };
+
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
