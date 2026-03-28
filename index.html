@@ -4,35 +4,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body, html { margin: 0; padding: 0; height: 100%; background: black; display: flex; justify-content: center; align-items: center; }
-    #overlay { color: white; font-size: 2em; cursor: pointer; }
+    #overlay { color: white; font-size: 2em; cursor: pointer; z-index: 999; }
+    #unmute-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); color: white;
+      display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer; display: none; z-index: 999;
+    }
     #player { width: 100%; height: 100%; display: none; }
   </style>
 </head>
 <body>
   <div id="overlay">Tap to Enter</div>
+  <div id="unmute-overlay">Tap to Unmute & Continue</div>
   <div id="player"></div>
 
   <script>
+    let player;
+
     document.getElementById('overlay').onclick = function() {
       this.style.display = 'none';
       document.getElementById('player').style.display = 'block';
 
-      var tag = document.createElement('script');
+      const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
+      const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    };
 
-      window.onYouTubeIframeAPIReady = function() {
-        player = new YT.Player('player', {
-          width: '100%',
-          height: '100%',
-          videoId: 'dQw4w9WgXcQ',
-          playerVars: { 'autoplay': 1, 'mute': 0, 'playsinline': 1 },
-          events: {
-            'onReady': function(e) { e.target.playVideo(); }
+    window.onYouTubeIframeAPIReady = function() {
+      player = new YT.Player('player', {
+        width: '100%',
+        height: '100%',
+        videoId: 'dQw4w9WgXcQ',
+        playerVars: { 'autoplay': 1, 'mute': 1, 'playsinline': 1 },
+        events: {
+          'onReady': function(e) {
+            e.target.playVideo();
+          },
+          'onStateChange': function(event) {
+            // If video is paused and still muted, show unmute prompt
+            if (event.data === YT.PlayerState.PAUSED && player.isMuted()) {
+              document.getElementById('unmute-overlay').style.display = 'flex';
+            }
           }
-        });
-      };
+        }
+      });
+    };
+
+    // Unmute when tapping the overlay
+    document.getElementById('unmute-overlay').onclick = function() {
+      player.unMute();
+      player.playVideo();
+      this.style.display = 'none';
     };
   </script>
 </body>
